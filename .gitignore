@@ -1,0 +1,5 @@
+knowledge/.env
+.venv/
+.idea/
+temp_data/
+__pycache__/
