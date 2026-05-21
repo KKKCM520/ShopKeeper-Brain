@@ -12,8 +12,7 @@ from knowledge.prompts.query_prompt import ITEM_NAME_SYSTEM_EXTRACT_TEMPLATE, IT
 from knowledge.utils.clients.ai_clients import AIClients
 from knowledge.utils.clients.storage_clients import StorageClients
 from knowledge.utils.embedding_util import generate_bge_m3_hybrid_vectors
-from knowledge.utils.milvus_util import create_hybrid_search_requests, execute_hybrid_search_query, milvus_client
-from knowledge.utils.mongo_history_util import get_recent_messages
+from knowledge.utils.milvus_util import create_hybrid_search_requests, execute_hybrid_search_query
 
 
 class _ItemNameAligner:
@@ -24,6 +23,7 @@ class _ItemNameAligner:
     def search_and_align(self,item_names: List[str]) -> Tuple[List[str], List[str]]:
         # 1. 混合检索向量数据库
         search_result = self._search_vector(item_names)
+        print(search_result)
         # 2. 判断检索到的结果，如果为空，则表示confirmed和options都没有
         if not search_result:
             return [],[]
@@ -318,23 +318,8 @@ class ItemNameConfirmedNode(BaseNode):
         """
         # 1. 获取用户原始问题
         original_query = state["original_query"]
-        #2. 获取历史对话(mongodb)
-        # 获取session_id
-        session_id = state.get("session_id","")
-        # 获取历史会话结果
-        history_messages = get_recent_messages(
-            session_id=session_id
-        )
-
-        #将历史会话信息存入state
-        state["history"] = history_messages
-
+        # TODO 2. 获取历史对话(mongodb)
         formatted_history_str = ""
-        for msg in history_messages:
-            role = msg.get("role")
-            content = msg.get("text", "")
-            formatted_history_str += f"{role}: {content}\n"
-
         # 3. 获取LLM结果
         llm_result: Dict[str, Any] = self._extractor.extract_item_name(original_query, formatted_history_str)
         # 4. 根据item_names做判断,进行商品名的对齐
@@ -360,8 +345,7 @@ class ItemNameConfirmedNode(BaseNode):
 if __name__ == '__main__':
     node = ItemNameConfirmedNode()
     state = {
-        "original_query": "你好呀",
-        "session_id": "2",
+        "original_query": "特斯拉Model3怎么开启自动驾驶?"
     }
     result_state = node.process(state)
     print(result_state)

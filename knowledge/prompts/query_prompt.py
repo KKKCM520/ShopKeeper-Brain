@@ -23,6 +23,9 @@ ITEM_NAME_USER_EXTRACT_TEMPLATE = """
     "rewritten_query": "关于商品A和商品B，..."
 }}"""
 
+ITEM_NAME_SYSTEM_EXTRACT_TEMPLATE = """
+是一位商品名提取专家，请从用户的问题以及历史对话中提取相关的商品名以及改写原始查询
+"""
 
 # ITEM_NAME_USER_EXTRACT_TEMPLATE = """
 # ## 核心任务
@@ -74,6 +77,10 @@ HYDE_USER_PROMPT_TEMPLATE = """
 2. 内容应紧扣用户问题，提供具体操作步骤或技术说明
 3. 适当使用专业术语，但避免过于晦涩
 4. 篇幅控制在 200-300 字左右
+"""
+
+HYDE_SYSTEM_PROMPT_TEMPLATE = """
+您是一位{item_names}的技术文档领域的专家，主要擅长编写技术文档、操作手册、文档规格说明
 """
 
 ANSWER_PROMPT = """你是一个智能助手，请根据参考内容回答用户的问题。

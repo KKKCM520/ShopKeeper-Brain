@@ -1,10 +1,5 @@
 --extra-index-url pytorch.org/whl/cu128
 
-torth
-torthvision
-
-
-
 minio
 langchain-openai
 langgraph
